@@ -1,8 +1,15 @@
 import React from "react";
 import { Contact, DeleteContactBtn } from "./ContactsList.styled";
 
+import { useSelector, useDispatch } from "react-redux";
+import { getContacts } from "redux/selectors";
+import { createContact, removeContact } from "redux/actions";
 
-const ContactsList = ({ contacts, onRemoveClick }) => (
+
+const ContactsList = () => {
+    const contacts = useSelector(getContacts);
+    const dispatch = useDispatch();
+    return (
     <ul>
         {
             contacts.map(({ id, name, number }) => {
@@ -12,15 +19,15 @@ const ContactsList = ({ contacts, onRemoveClick }) => (
                         <span>{number}</span>
                         <DeleteContactBtn
                             type="button"
-                            onClick={() => {
-                                onRemoveClick(id);
-                            }}
+                            // onClick={() => {
+                            //     dispatch(removeContact);
+                            // }}
                         >❌</DeleteContactBtn>
                     </Contact>
                 )
             })
         }
     </ul>
-) 
+)}
 
 export default ContactsList;
