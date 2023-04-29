@@ -18,5 +18,5 @@ export const contactsReducer = createReducer(contactsInitialState, {
 const filterInitialState = "";
 
 export const filterReducer = createReducer(filterInitialState, {
-    [setFilter]: (state, action) => state= action.payload,
+    [setFilter]: (state, action) => state = action.payload,
 })
