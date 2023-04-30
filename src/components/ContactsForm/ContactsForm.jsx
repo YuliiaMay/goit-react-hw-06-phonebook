@@ -1,63 +1,27 @@
-import { useState } from "react";
+import { nanoid } from "@reduxjs/toolkit";
 import { Form, Title, ContactFormLabel, ContactInput, AddContactBtn } from "./ContactsForm.styled";
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from "react-redux";
-import { createContact } from "redux/actions";
-import { getContacts } from "redux/selectors";
-
-
-
+import { useDispatch } from "react-redux";
+import { createContact } from "../../redux/contactsSlice/contactsSlice";
 
 const ContactsForm = () => {
-    // const [name, setName] = useState('');
-    // const [number, setNumber] = useState('');
     const dispatch = useDispatch();
-    const contacts = useSelector(getContacts);
-
-
-    // const handleChange = ({ target: { value, name } }) => {
-    //     switch(name) {
-    //         case 'name':
-    //             setName(value);                
-    //             break;
-            
-    //         case 'number':
-    //             setNumber(value);                
-    //             break;   
-            
-    //         default:
-    //             break;
-    //     }
-    // }
-
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
+        let name = e.target.elements.name.value;
+        let number = e.target.elements.number.value;
 
-        // if (contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())) {
-        //     return alert(`${name} is already in contacts.`);
-        // } else if (contacts.find(contact => contact.number.toLowerCase() === number.toLowerCase())) {
-        //     return alert(`This number is already in contacts.`);
-        // }
+        const newContact = {
+            id: nanoid(),
+            name,
+            number
+        };
 
-        // onSubmit({
-        //     name,
-        //     number
-        // });
+        dispatch(createContact(newContact));
+        e.target.elements.name.value = '';
+        e.target.elements.number.value = '';
+    };
 
-        // reset();
-        console.log(e.target);
-        const form = e.target;
-        console.log(form);
-        // dispatch(createContact(form.elements.name.value));
-
-    }
-
-
-    // const reset = () => {
-    //     setName('')
-    //     setNumber('')
-    // };
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -67,13 +31,10 @@ const ContactsForm = () => {
                 id="contact-name"
                 type="text"
                 name="name"
-                // value={name}
                 pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                 title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                 required
-                // onChange={handleChange}
             />
-            
 
             <ContactFormLabel htmlFor="contact-number">Number</ContactFormLabel>
             <ContactInput
@@ -83,18 +44,13 @@ const ContactsForm = () => {
                 pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                 title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                 required
-                // value={number}
-                // onChange={handleChange}
             />
-            
 
             <AddContactBtn type="submit">
                 ADD
             </AddContactBtn>
-        </Form>            
+        </Form>
     )
-}
-
-
+};
 
 export default ContactsForm;
