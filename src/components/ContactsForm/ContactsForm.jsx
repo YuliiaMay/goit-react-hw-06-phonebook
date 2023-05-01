@@ -1,15 +1,25 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { Form, Title, ContactFormLabel, ContactInput, AddContactBtn } from "./ContactsForm.styled";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createContact } from "../../redux/contactsSlice/contactsSlice";
+import { getContacts } from "redux/selectors";
+import { useState } from "react";
 
 const ContactsForm = () => {
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
     const dispatch = useDispatch();
+
+    const contacts = useSelector(getContacts);
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        let name = e.target.elements.name.value;
-        let number = e.target.elements.number.value;
+
+        if (contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())) {
+            return alert(`${name} is already in contacts.`);
+        } else if (contacts.find(contact => contact.number.toLowerCase() === number.toLowerCase())) {
+            return alert(`This number is already in contacts.`);
+        }
 
         const newContact = {
             id: nanoid(),
@@ -18,8 +28,21 @@ const ContactsForm = () => {
         };
 
         dispatch(createContact(newContact));
-        e.target.elements.name.value = '';
-        e.target.elements.number.value = '';
+        reset();
+    };
+
+    const reset = () => {
+        setName('')
+        setNumber('')
+    };
+
+    const handleChange = e => {
+        if (e.target.name === 'name') {
+            setName(e.target.value);
+        }
+        if (e.target.name === 'number') {
+            setNumber(e.target.value);
+        }
     };
 
 
@@ -31,6 +54,8 @@ const ContactsForm = () => {
                 id="contact-name"
                 type="text"
                 name="name"
+                value={name}
+                onChange={handleChange}
                 pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                 title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                 required
@@ -41,6 +66,8 @@ const ContactsForm = () => {
                 id="contact-number"
                 type="tel"
                 name="number"
+                value={number}
+                onChange={handleChange}
                 pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                 title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                 required

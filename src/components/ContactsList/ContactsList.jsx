@@ -7,14 +7,19 @@ import { removeContact } from "../../redux/contactsSlice/contactsSlice";
 
 const ContactsList = () => {
     const contacts = useSelector(getContacts);
-    const filter = useSelector(getFilter);
+    const filterValue = useSelector(getFilter);
     const dispatch = useDispatch();
+
+    const getFilteredContacts = () => {
+        return contacts
+            .filter(contact => contact.name.toLowerCase().includes(filterValue))
+    }
 
 
     return (
         <ul>
             {
-                contacts.map(({ id, name, number }) => {
+                getFilteredContacts().map(({ id, name, number }) => {
                     return (
                         <Contact key={id}>
                             <span>{name}</span>
